@@ -1,0 +1,17 @@
+python-dotenv
+python-docx
+PyMuPDF
+marker-pdf[all]
+markitdown[all]
+pymupdf4llm
+beautifulsoup4
+fastapi[all]
+uvicorn
+ipython
+langgraph
+retry
+hf_transfer
+langchain-community
+qdrant-client
+celery
+redis
