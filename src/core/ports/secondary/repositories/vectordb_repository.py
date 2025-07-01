@@ -29,6 +29,20 @@ class VectorDBRepository(ABC):
         pass
     
     @abstractmethod
+    def create_collection(
+        self, client: Client
+    ) -> bool:
+        """Create a new collection in the vector database."""
+        pass
+    
+    @abstractmethod
+    def delete_collection(
+        self, client_id: str
+    ) -> bool:
+        """Delete a collection from the vector database."""
+        pass
+    
+    @abstractmethod
     async def ainsert_document(
         self, client: Client, document: DocumentWithVector
     ) -> DocumentWithVector:
@@ -47,5 +61,19 @@ class VectorDBRepository(ABC):
         self, client: Client, search_query: SearchQueryWithVector, limit: int = 20
     ) -> List[DocumentWithVector]:
         """Asynchronously retrieve documents based on a search query."""
+        pass
+    
+    @abstractmethod
+    async def acreate_collection(
+        self, client: Client
+    ) -> bool:
+        """Asynchronously create a new collection in the vector database."""
+        pass
+    
+    @abstractmethod
+    async def adelete_collection(
+        self, client_id: str
+    ) -> bool:
+        """Asynchronously delete a collection from the vector database."""
         pass
     

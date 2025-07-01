@@ -17,6 +17,7 @@ from .get_retrieve_tools_service import GetRetrieveToolsService
 from .retrieve_service import RetrieveService
 from .get_citations_service import GetCitationsService
 from .tool_call_handling_service import ToolCallHandlingService
+from .client_managing_service import ClientManagingService
 
 __all__ = [
     "ChunkingService",
@@ -34,6 +35,7 @@ __all__ = [
     "XlsxFileReadingService",
     "GetRetrieveToolsService",
     "RetrieveService",
-    "GetCitationsService"
-    "ToolCallHandlingService"
+    "GetCitationsService",
+    "ToolCallHandlingService",
+    "ClientManagingService"
 ]

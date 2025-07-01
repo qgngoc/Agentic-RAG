@@ -1,4 +1,5 @@
 
+import logging
 from typing import List
 
 from core.entities import Document, DocumentWithVector, InputFile, Client, FileContent, IndexDocumentStatus
@@ -40,6 +41,7 @@ class IndexDocumentUseCaseImpl(IndexDocumentPort):
                 documents=indexed_documents
             )
         except Exception as e:
+            logging.exception(f"Failed to index document {input_file.local_file_path}: {e}")
             status = IndexDocumentStatus(
                 file_path=input_file.local_file_path,
                 status="failed"

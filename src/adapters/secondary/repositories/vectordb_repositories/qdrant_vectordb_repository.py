@@ -9,6 +9,7 @@ from qdrant_client.http.models import (
     Range,
     SearchRequest,
 )
+from qdrant_client.models import Distance
 
 from core.ports.secondary.repositories import VectorDBRepository
 from core.ports.secondary.services.embedding_service import EmbeddingService
@@ -47,18 +48,32 @@ class QdrantVectorDBRepositoryImpl(VectorDBRepository):
                     f"Collection {collection_id} already exists.")
                 return True
             vector_dimensions = self.embedding_service.get_embedding_dimension()
-            self.qdrant_client.create_collection(
+            self.qdrant_client.recreate_collection(
                 collection_name=collection_id,
                 vectors_config={
                     "size": vector_dimensions,
-                    "distance": "Cosine",  # Distance metric
+                    "distance": Distance.COSINE,  # Distance metric
                 },
             )
             return True
         except Exception as e:
-            logger.error(f"Error creating collection: {e}")
-            return False
+            raise Exception(f"Error creating collection: {e}")
 
+    def create_collection(self, client: Client) -> bool:
+        return self._create_collection(f"{self.collection_name}_{client.id}")
+    
+    def delete_collection(self, client_id: str) -> bool:
+        """Delete a collection from the vector database."""
+        try:
+            collection_id = f"{self.collection_name}_{client_id}"
+            if not self._check_collection_exists(collection_id):
+                logger.info(f"Collection {collection_id} does not exist.")
+                return False
+            self.qdrant_client.delete_collection(collection_name=collection_id)
+            return True
+        except Exception as e:
+            raise Exception(f"Error deleting collection: {e}")
+    
     def insert_document(
         self, client: Client, document: DocumentWithVector
     ) -> DocumentWithVector:
@@ -146,6 +161,7 @@ class QdrantVectorDBRepositoryImpl(VectorDBRepository):
         self, client: Client, document: DocumentWithVector
     ) -> DocumentWithVector:
         """Asynchronously save a document with its vector representation."""
+        # TODO: Implement asynchronous insertion
         raise NotImplementedError(
             "Asynchronous insert is not implemented for QdrantVectorDBRepository."
         )
@@ -154,6 +170,7 @@ class QdrantVectorDBRepositoryImpl(VectorDBRepository):
         self, client: Client, documents: List[DocumentWithVector]
     ) -> List[DocumentWithVector]:
         """Asynchronously insert multiple documents into the vector database."""
+        # TODO: Implement asynchronous insertion
         raise NotImplementedError(
             "Asynchronous insert is not implemented for QdrantVectorDBRepository."
         )
@@ -162,8 +179,23 @@ class QdrantVectorDBRepositoryImpl(VectorDBRepository):
         self, client: Client, search_query: SearchQueryWithVector, limit: int = 20
     ) -> List[DocumentWithVector]:
         """Asynchronously find documents by their vector representation."""
+        # TODO: Implement asynchronous retrieval
         raise NotImplementedError(
             "Asynchronous retrieval is not implemented for QdrantVectorDBRepository."
+        )
+        
+    async def acreate_collection(self, client: Client) -> bool:
+        """Asynchronously create a collection in the vector database."""
+        # TODO: Implement asynchronous collection creation
+        raise NotImplementedError(
+            "Asynchronous collection creation is not implemented for QdrantVectorDBRepository."
+        )
+        
+    async def adelete_collection(self, client_id: str) -> bool:
+        """Asynchronously delete a collection from the vector database."""
+        # TODO: Implement asynchronous collection deletion
+        raise NotImplementedError(
+            "Asynchronous collection deletion is not implemented for QdrantVectorDBRepository."
         )
     
     def _build_payload(self, document: DocumentWithVector,

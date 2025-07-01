@@ -38,12 +38,14 @@ from adapters.secondary.services.retrieve_services.semantic_retrieve_services im
 from adapters.secondary.services.get_retrieve_tools_services.get_retrieve_tools_service import GetRetrieveToolsServiceImpl
 from adapters.secondary.services.get_citations_services.get_citations_service import GetCitationsServiceImpl
 from adapters.secondary.services.tool_call_handling_services.tool_call_handling_service import ToolCallHandlingServiceImpl
+from adapters.secondary.services.client_managing_services.client_managing_service import ClientManagingServiceImpl
 from adapters.secondary.repositories.vectordb_repositories.qdrant_vectordb_repository import QdrantVectorDBRepositoryImpl
 
 from core.usecases.generate_response import GenerateResponseUseCaseImpl
 from core.usecases.get_llm_configs import GetLLMConfigsUseCaseImpl
 from core.usecases.get_read_file_config import GetReadFileConfigUseCaseImpl
 from core.usecases.index_document import IndexDocumentUseCaseImpl
+from core.usecases.client_manage import ClientManageUseCaseImpl
 
 from qdrant_client import QdrantClient
 qdrant_client = QdrantClient(
@@ -218,3 +220,12 @@ index_document_port.add_chunking_service(
     key='text',
     service=markdown_chunking_service
 )
+
+client_managing_service = ClientManagingServiceImpl(
+    vector_db_repository=qdrant_vectordb_repository
+)
+
+client_manage_port = ClientManageUseCaseImpl(
+    client_managing_service=client_managing_service
+)
+    

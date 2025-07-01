@@ -58,3 +58,21 @@ class IndexDocumentsBackgroundOutputSchema(BaseModel):
         description="List of statuses for each indexed document. Each status includes file path, file name, and indexing status."
     )
 
+class CreateClientInputSchema(BaseModel):
+    """Schema for creating a new client."""
+    client: Client = Field(..., description="Client information to be created.")
+    
+class CreateClientOutputSchema(BaseModel):
+    """Schema for the output of client creation."""
+    client: Client = Field(..., description="The created client information.")
+    status: str = Field(
+        "success",
+        description="Status of the client creation operation. 'success' if the client was created successfully, otherwise an error message."
+    )
+    
+class ClientDeleteOutputSchema(BaseModel):
+    """Schema for the output of client deletion."""
+    status: str = Field(
+        "success",
+        description="Status of the client deletion operation. 'success' if the client was deleted successfully, otherwise an error message."
+    )

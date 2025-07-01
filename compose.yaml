@@ -2,14 +2,42 @@ version: '3.12'
 
 services:
   qdrant:
+    container_name: aime-agenticrag-qdrant
     image: qdrant/qdrant
     ports:
       - "6333:6333"
       - "6334:6334"
     volumes:
       - ./data/mount/qdrant_storage:/qdrant/storage
+    
+  celery:
+    container_name: aime-agenticrag-celery
+    image: aime-agenticrag
+    command: celery -A adapters.primary.rest.celery_tasks.index_document_task worker --loglevel=info
+    environment:
+      - QDRANT_URL=${QDRANT_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - QDRANT_COLLECTION_NAME=${QDRANT_COLLECTION_NAME}
+      - HF_HOME=${HF_HOME}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}
+      - CELERY_APP_NAME=${CELERY_APP_NAME}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+    volumes:
+      - ./src:/src
+      - /home/ubuntu/.cache/datalab:/root/.cache/datalab
+      - ./data/test:/data/test
+
+  redis:
+    container_name: aime-agenticrag-redis
+    image: redis:latest
+    ports:
+      - "6779:6379"
+    volumes:
+      - ./data/mount/redis_data:/data
 
   aime-agenticrag:
+    container_name: aime-agenticrag-app
     image: aime-agenticrag
     ports:
       - "8088:8088"
@@ -24,3 +52,7 @@ services:
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
     depends_on:
       - qdrant
+    volumes:
+      - ./src:/src
+      - /home/ubuntu/.cache/datalab:/root/.cache/datalab
+      - ./data/test:/data/test

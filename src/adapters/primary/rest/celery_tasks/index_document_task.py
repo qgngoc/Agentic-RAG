@@ -21,8 +21,8 @@ from infrastructure.di.container import index_document_port
 
 app = Celery(
     "aime-agenticrag",
-    broker=os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0"),
-    backend=os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+    broker=os.getenv("CELERY_BROKER_URL"),
+    backend=os.getenv("CELERY_RESULT_BACKEND")
 )
 
 @app.task(name="index_document_task")
@@ -31,7 +31,7 @@ def index_document_task(id: str, client: dict, input_file: dict) -> None:
     input_file = InputFile(**input_file)
     status = index_document_port.index_document(client, input_file)
     handle_callback(id, status)
-    return status
+    return
     
 def handle_callback(id: str, status: IndexDocumentStatus):
     # TODO: handle callback
